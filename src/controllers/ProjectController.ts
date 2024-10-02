@@ -1,5 +1,5 @@
-import type { Request, Response } from "express";
-import Project from "../models/Project";
+import type { Request, Response } from 'express';
+import Project from '../models/Project';
 
 export class ProjectController {
   static createProject = async (req: Request, res: Response) => {
@@ -7,7 +7,7 @@ export class ProjectController {
 
     try {
       await project.save();
-      res.status(201).send({ message: "Project created successfully" });
+      res.status(201).send({ message: 'Project created successfully' });
     } catch (error) {
       res.status(400).send(error);
     }
@@ -28,10 +28,10 @@ export class ProjectController {
   ): Promise<void> => {
     const { id } = req.params;
     try {
-      const project = await Project.findById(id);
+      const project = await Project.findById(id).populate('tasks');
 
       if (!project) {
-        const error = new Error("Project not found");
+        const error = new Error('Project not found');
         res.status(404).json({ error: error.message });
       }
       res.json(project);
@@ -43,18 +43,17 @@ export class ProjectController {
   static updateProject = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     try {
-      const project = await Project.findByIdAndUpdate(
-        id,
-        { $set: req.body },
-        { new: true, runValidators: true }
-      );
+      const project = await Project.findById(id);
       if (!project) {
-        const error = new Error("Project not found");
-        res.status(404).json({ error: error.message });
+        res.status(404).json({ error: 'Project not found' });
+        return;
       }
 
+      Object.assign(project, req.body);
+
       await project.save();
-      res.json({ message: "Project updated successfully" });
+
+      res.json({ message: 'Project updated successfully', project });
     } catch (error) {
       res.status(400).send({ error: error.message });
     }
@@ -66,12 +65,12 @@ export class ProjectController {
       const project = await Project.findById(id);
 
       if (!project) {
-        const error = new Error("Project not found");
+        const error = new Error('Project not found');
         res.status(404).json({ error: error.message });
       }
 
       await project.deleteOne();
-      res.json({ message: "Project deleted successfully" });
+      res.json({ message: 'Project deleted successfully' });
     } catch (error) {
       res.status(400).send({ error: error.message });
     }
