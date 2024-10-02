@@ -40,7 +40,7 @@ export class TaskController {
 
       await req.task.save();
 
-      res.json({ message: 'Task updated successfully' });
+      res.send({ message: 'Task updated successfully' });
     } catch (error) {
       res.status(400).send(error);
     }
@@ -53,7 +53,7 @@ export class TaskController {
       );
       await Promise.allSettled([req.task.deleteOne(), req.project.save()]);
 
-      res.json({ message: 'Task deleted successfully' });
+      res.send({ message: 'Task deleted successfully' });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -64,7 +64,7 @@ export class TaskController {
       const { status } = req.body;
       req.task.status = status;
       await req.task.save();
-      res.json({ message: 'Task status updated successfully' });
+      res.send({ message: 'Task status updated successfully' });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }

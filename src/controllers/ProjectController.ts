@@ -53,7 +53,7 @@ export class ProjectController {
 
       await project.save();
 
-      res.json({ message: 'Project updated successfully', project });
+      res.send({ message: 'Project updated successfully' });
     } catch (error) {
       res.status(400).send({ error: error.message });
     }
@@ -70,7 +70,7 @@ export class ProjectController {
       }
 
       await project.deleteOne();
-      res.json({ message: 'Project deleted successfully' });
+      res.send({ message: 'Project deleted successfully' });
     } catch (error) {
       res.status(400).send({ error: error.message });
     }
