@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import morgan from 'morgan';
 import { corsConfig } from './config/cors';
 import { connectDB } from './config/db';
 import projectRoutes from './routes/projectRoutes';
@@ -13,6 +14,10 @@ const app: express.Application = express();
 app.use(cors(corsConfig));
 //app.use(cors())  //accept all origins
 
+//Logging
+app.use(morgan('dev'));
+
+// Read data from the body in json format
 app.use(express.json());
 
 //Routes
