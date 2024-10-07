@@ -121,7 +121,7 @@ router.put(
 /** Routes for teams */
 router.post(
   '/:projectId/team/find',
-  body('email').isEmail().toLowerCase().withMessage('E-mail no válido'),
+  body('email').isEmail().toLowerCase().withMessage('Invalid email'),
   handleInputErrors,
   TeamMemberController.findMemberByEmail
 );
@@ -130,14 +130,14 @@ router.get('/:projectId/team', TeamMemberController.getProjectTeam);
 
 router.post(
   '/:projectId/team',
-  body('id').isMongoId().withMessage('ID No válido'),
+  body('id').isMongoId().withMessage('Invalid ID'),
   handleInputErrors,
   TeamMemberController.addMemberById
 );
 
 router.delete(
   '/:projectId/team/:userId',
-  param('userId').isMongoId().withMessage('ID No válido'),
+  param('userId').isMongoId().withMessage('Invalid ID'),
   handleInputErrors,
   TeamMemberController.removeMemberById
 );
@@ -145,9 +145,7 @@ router.delete(
 /** Routes for Notes */
 router.post(
   '/:projectId/tasks/:taskId/notes',
-  body('content')
-    .notEmpty()
-    .withMessage('El Contenido de la nota es obligatorio'),
+  body('content').notEmpty().withMessage('Note content is required'),
   handleInputErrors,
   NoteController.createNote
 );
@@ -156,7 +154,7 @@ router.get('/:projectId/tasks/:taskId/notes', NoteController.getTaskNotes);
 
 router.delete(
   '/:projectId/tasks/:taskId/notes/:noteId',
-  param('noteId').isMongoId().withMessage('ID No Válido'),
+  param('noteId').isMongoId().withMessage('Invalid ID'),
   handleInputErrors,
   NoteController.deleteNote
 );
