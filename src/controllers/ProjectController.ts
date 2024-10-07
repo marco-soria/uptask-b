@@ -5,6 +5,7 @@ export class ProjectController {
   static createProject = async (req: Request, res: Response) => {
     const project = new Project(req.body);
 
+    project.manager = req.user.id;
     try {
       await project.save();
       res.status(201).send({ message: 'Project created successfully' });
@@ -15,7 +16,12 @@ export class ProjectController {
 
   static getAllProjects = async (req: Request, res: Response) => {
     try {
-      const projects = await Project.find({});
+      const projects = await Project.find({
+        $or: [
+          { manager: { $in: req.user.id } },
+          { team: { $in: req.user.id } },
+        ],
+      });
       res.json(projects);
     } catch (error) {
       res.status(400).send(error);
@@ -32,6 +38,13 @@ export class ProjectController {
 
       if (!project) {
         const error = new Error('Project not found');
+        res.status(404).json({ error: error.message });
+      }
+      if (
+        project.manager.toString() !== req.user.id.toString() &&
+        !project.team.includes(req.user.id)
+      ) {
+        const error = new Error('Invalid action');
         res.status(404).json({ error: error.message });
       }
       res.json(project);
