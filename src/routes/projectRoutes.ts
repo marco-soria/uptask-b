@@ -6,11 +6,18 @@ import { handleInputErrors } from '../middleware/validation';
 import Task from '../models/Task';
 import { TaskController } from '../controllers/TaskController';
 import { projectExists } from '../middleware/project';
-import { taskBelongsToProject, taskExists } from '../middleware/task';
+import {
+  hasAuthorization,
+  taskBelongsToProject,
+  taskExists,
+} from '../middleware/task';
 import { TeamMemberController } from '../controllers/TeamController';
 import { NoteController } from '../controllers/NoteController';
+import { authenticate } from '../middleware/auth';
 
 const router: Router = Router();
+
+router.use(authenticate);
 
 router.get('/', ProjectController.getAllProjects);
 
@@ -46,6 +53,7 @@ router.put(
     .notEmpty()
     .withMessage('Description is required'),
   handleInputErrors,
+  hasAuthorization,
   ProjectController.updateProject
 );
 
@@ -53,6 +61,7 @@ router.delete(
   '/:id',
   param('id').isMongoId().withMessage('Invalid ID'),
   handleInputErrors,
+  hasAuthorization,
   ProjectController.deleteProject
 );
 
@@ -61,6 +70,7 @@ router.param('projectId', projectExists); // this line's purpose is to validate 
 
 router.post(
   '/:projectId/tasks',
+  hasAuthorization,
   body('name').notEmpty().withMessage('Task name is required'),
   body('description').notEmpty().withMessage('Description is required'),
   handleInputErrors,
@@ -81,6 +91,7 @@ router.get(
 
 router.put(
   '/:projectId/tasks/:taskId',
+  hasAuthorization,
   param('taskId').isMongoId().withMessage('Invalid ID'),
   body('name').optional().notEmpty().withMessage('Task name is required'),
   body('description')
@@ -93,6 +104,7 @@ router.put(
 
 router.delete(
   '/:projectId/tasks/:taskId',
+  hasAuthorization,
   param('taskId').isMongoId().withMessage('Invalid ID'),
   handleInputErrors,
   TaskController.deleteTask
