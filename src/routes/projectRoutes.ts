@@ -114,7 +114,7 @@ router.post(
   TeamMemberController.findMemberByEmail
 );
 
-router.get('/:projectId/team', TeamMemberController.getProjecTeam);
+router.get('/:projectId/team', TeamMemberController.getProjectTeam);
 
 router.post(
   '/:projectId/team',
