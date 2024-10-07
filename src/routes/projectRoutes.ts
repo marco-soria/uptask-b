@@ -93,7 +93,7 @@ router.delete(
   '/:projectId/tasks/:taskId',
   param('taskId').isMongoId().withMessage('Invalid ID'),
   handleInputErrors,
-  TaskController.getTaskById
+  TaskController.deleteTask
 );
 
 router.put(
